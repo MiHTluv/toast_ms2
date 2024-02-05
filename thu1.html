@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- fontawesome cdn -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+        <link rel="stylesheet" href="./error.css">
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="toast">
+            <!-- Success -->    
+        </div>
+        <div class="xxx">
+            <div class="btn btn--success">Show success</div>
+            <div class="btn btn--error">Show error</div>
+        </div>
+    </body>
+    <script>
+        const $=document.querySelector.bind(document);
+        const $$=document.querySelectorAll.bind(document);
+
+        const successBtn=$('.btn--success');
+        const errorBtn=$('.btn--error');
+        const toastBox=$('#toast');
+
+        const app={
+            toast:function({
+                title='',
+                message='',
+                type='info',
+                duration=3000
+            }){
+                if(toastBox){
+                    const toast=document.createElement('div');
+                    toast.classList.add('toast',`toast--${type}`);
+
+                    const icons={
+                        success:'fas fa-check-circle',
+                        info:'fas fa-info-circle',
+                        warning:'fas fa-exclamation-circle',
+                        error:'fas fa-exclamation-circle'
+                    };
+                    const icon=icons[type];
+
+                    toast.innerHTML=`
+
+                        <div class="toast__icon">
+                            <i class="${icon}"></i>
+                        </div>
+                        <div class="toast__body">
+                            <h3 class="toast__title">${title}</h3>
+                            <p class="toast__msg">${message}</p>
+                        </div>
+                        <div class="toast__close">
+                            <i class="fas fa-times"></i>
+                        </div>
+
+                    `;
+                    toastBox.appendChild(toast);
+
+                    const delay=(duration/1000).toFixed(2);
+                    toast.style.animation=`leftInright ease 0.6s, Outra linear 1s ${delay}s forwards`;
+                    
+                    const autoRemoveId=setTimeout(function(){
+                        toastBox.removeChild(toast);
+                    },duration + 1000);
+                    toast.onclick=function(e){
+                        if(e.target.closest('.toast__close')){
+                            toastBox.removeChild(toast);
+                            clearTimeout(autoRemoveId);
+                        }
+                    }
+
+                }
+            },
+            showSuccess:function(){
+                this.toast({
+                    title:'Successs',
+                    message:'Bạn đã đăng ký thành công tài khoản tại F8 ',
+                    type:'success',
+                    duration:1000
+                });
+            },   
+            showError:function(){
+                this.toast({
+                    title:'co loi',
+                    message:'Bạn đã đăng ký fail tài khoản tại F8 ',
+                    type:'warning',
+                    duration:3000
+                });
+            },
+            handleToast:function(){
+                    successBtn.onclick=function(){
+                        app.showSuccess();
+                    }
+                    errorBtn.onclick=function(){
+                        app.showError();
+                    }
+            },
+            
+            start:function(){
+                this.handleToast();
+                // this.toast({});
+            }
+        }
+        app.start();
+    </script>
+</html>
